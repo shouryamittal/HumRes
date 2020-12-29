@@ -8,6 +8,7 @@ require("./db/connection");
 const express = require("express");
 const bodyParser = require("body-parser");
 const OrgRoutes = require("./routes/org");
+const UserRoutes = require("./routes/user");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -16,6 +17,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 
 //TODO: check MIME type
 app.use("/org", OrgRoutes);
+app.use("/user", UserRoutes);
 app.get("/",(req, res) => {
     res.send("OK");
 });

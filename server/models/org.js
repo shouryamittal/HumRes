@@ -11,9 +11,9 @@ const OrgSchema = new Schema({
     },
     urlTxt: {
         type: String,
-        required: false
+        required: true
     }
 });
-
+//TODO: input validations
 const Organisation = mongoose.model("Organisation", OrgSchema);
 module.exports = Organisation;
