@@ -3,7 +3,7 @@ const OrgController = require("../controllers/org");
 
 router
     .post("/", OrgController.setupOrg)
-    .get("/info", OrgController.getOrgDetails)
+    .get("/", OrgController.findOrgByUrlTxt)
 
 
 module.exports = router;

@@ -27,7 +27,7 @@ const addUser = async (req, res) => {
         }
     }
     else {
-        res.status(400).send("Please provide the correct Input");
+        res.status(400).send("Invalid Reuqest: Please provide the correct Input");
     }
 }
 

@@ -12,6 +12,31 @@ const OrgSchema = new Schema({
     urlTxt: {
         type: String,
         required: true
+    },
+    departments: {
+        type:[String],
+        required: false,
+        default:[]
+    },
+    address: {
+        type: String,
+        required: false,
+        default: ""
+    },
+    owner: {
+        type: String,
+        required: false,
+        default:""
+    },
+    contact: {
+        type: [String],
+        required: false,
+        default:[]
+    },
+    totalEmployees: {
+        type: Number,
+        required: false,
+        default:0
     }
 });
 //TODO: input validations
