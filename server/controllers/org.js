@@ -5,6 +5,7 @@
 
 const Organisation = require("../models/org");
 const QUERY_TYPE = require("../enums/org");
+const HTTP = require("../enums/http");
 
 const setupOrg = async (req, res) => {
     if(req.body.name && req.body.email) {
@@ -13,7 +14,7 @@ const setupOrg = async (req, res) => {
         //check if organisation is already registered.
         const orgWithEmail = await Organisation.findOne({email: orgData.email});
         if(orgWithEmail) {
-            res.status(409).send("Email already exists.");
+            res.status(HTTP.STATUS.ALREADY_EXISTS).send("Email already exists.");
         }
         else {
             const org = new Organisation({
@@ -25,25 +26,37 @@ const setupOrg = async (req, res) => {
                 owner: orgData.owner,
                 contact: orgData.contact
             });
-            const response = await org.save();
+            const response = "";
+            try {
+                response = await org.save();
+            }
+            catch(e) {
+                return next(e);
+            }
             if(!response) {
-                res.status(500).send("Internal Server Error");
+                res.status(HTTP.STATUS.SERVER_ERROR).send("Internal Server Error");
             }
             else {
-                res.status(201).send({orgUrlTxt, orgId:orgData.email});
+                res.status(HTTP.STATUS.NEW_RESOURCE_CREATED).send({orgUrlTxt, orgId:orgData.email});
             }
         }
     }
     else {
-        res.status(400).send("Please provide the correct Input");
+        res.status(HTTP.STATUS.INVALID_REQ).send("Please provide the correct Input");
     }
 }
 
 /*this function finds a organisation using the query parameter "urlTxt" in the req.query*/
-const findOrgByUrlTxt = async (req, res) => {
+const findOrgByUrlTxt = async (req, res, next) => {
     if(req.query && req.query.urlTxt) {
         let urlTxt = req.query.urlTxt.trim().toLowerCase();
-        const org = await Organisation.findOne({urlTxt});
+        const org = "";
+        try {
+            org = await Organisation.findOne({urlTxt});
+        }
+        catch(e) {
+            return next(e);
+        }
         if(org) {
             let orgData = {};
             if(req.query.type == QUERY_TYPE.REGISTER_CHECK) {
@@ -67,14 +80,14 @@ const findOrgByUrlTxt = async (req, res) => {
                     totalEmp: org.totalEmployees
                 }
             }
-            res.status(200).send(orgData);
+            res.status(HTTP.STATUS.SUCCESS).send(orgData);
         }
         else {
-            res.status(404).send({isOrgRegistered: false, isUrlTxtPresent: false});
+            res.status(HTTP.STATUS.NOT_FOUND).send({isOrgRegistered: false, isUrlTxtPresent: false});
         }
     }
     else {
-        res.status(400).send("Invalid Reuqest: Provide urlTxt query parameter.")
+        res.status(HTTP.STATUS.INVALID_REQ).send("Invalid Reuqest: Provide urlTxt query parameter.")
     }
 }
 

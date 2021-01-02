@@ -4,31 +4,46 @@
  * ****************************************************************/
 
 const User = require("../models/user");
+const jwt = require("jsonwebtoken");
+const ROLE = require("../enums/user");
+const HTTP = require("../enums/http");
 
-const addUser = async (req, res) => {
+const addUser = async (req, res, next) => {
     //TODO: Validation of req.body
     if(req.body) {
         const data = {...req.body};
+        if(data.role == ROLE.ADMIN) {
+            data.isAdmin = true;
+        }
         //check if user is already present
         const user = await User.findOne({email: data.email});
         if(user) {
-            res.status(409).send("Email already exists.");
+            res.status(HTTP.STATUS.ALREADY_EXISTS).send("Email already exists.");
         }
         else {
             const newUser = new User(data);
-            let response = await newUser.save();
+            let response;
+            try {
+                response = await newUser.save();
+            }
+            catch(e) {
+                return next(e);
+            }
             if(!response) {
-                res.status(500).send("Internal Server Error");
+                res.status(HTTP.STATUS.SERVER_ERROR).send("Internal Server Error");
             }
             else {
-                //TODO: token to be sent 
-                res.status(200).send("User added Successfully.")
+                let authToken = createAuthToken(newUser);
+                res.status(HTTP.STATUS.SUCCESS).send(authToken);
             }
         }
     }
     else {
-        res.status(400).send("Invalid Reuqest: Please provide the correct Input");
+        res.status(HTTP.STATUS.INVALID_REQ).send("Invalid Reuqest: Please provide the correct Input");
     }
 }
 
+const createAuthToken = (user) => {
+    return jwt.sign({id: user._id}, process.env.JWT_SECRET,{ expiresIn: 360});
+}
 module.exports = {addUser}

@@ -4,8 +4,8 @@
   "description": "server for HumRes app",
   "main": "index.js",
   "scripts": {
-    "start":"node index",
-    "build":"nodemon --exec npm start",
+    "start": "node index",
+    "build": "nodemon --exec npm start",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -18,8 +18,10 @@
   "author": "Shourya Mittal",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^5.0.0",
     "body-parser": "^1.19.0",
     "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.11.8"
   },
   "devDependencies": {

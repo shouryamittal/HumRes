@@ -1,4 +1,5 @@
 const {mongoose, Schema} = require("./abstractModel");
+const bcrypt = require("bcrypt");
 
 const UserSchema = new Schema({
     orgId: {
@@ -17,18 +18,32 @@ const UserSchema = new Schema({
         type: String,
         required: true
     },
-    contact: {
+    password: {
         type: String,
-        required: true
+        required: true,
     },
     role: {
         type: String,
         enum: ["admin","hr","emp"],
         required: true
     },
-    sex: {
-        type: String,
+    isAdmin :{
+        type: Boolean,
+        required: true
+    },
+    manages: {
+        type: [String],
+        required:false,
+        default:null
+    },
+    manager: {
+        type: mongoose.Types.ObjectId,
         required: false
+    },
+    title: {
+        type: String,
+        required: false,
+        default: ""
     },
     businessUnit: {
         type: String,
@@ -41,9 +56,30 @@ const UserSchema = new Schema({
     address: {
         type: String,
         required: false
+    },
+    contact: {
+        type: String,
+        required: false
+    },
+    sex: {
+        type: String,
+        required: false
     }
+    
 });
 //TODO: input validations
+
+UserSchema.pre('save', async function (next) {
+    const salt = await bcrypt.genSalt(parseInt(process.env.JWT_SALT_ROUND));
+    const hashedPassword = await bcrypt.hash(this.password, salt);
+    try {
+        this.password = hashedPassword;
+    }
+    catch(e) {
+        next(e);
+    }
+});
+
 //instance method, available for each User instance.
 UserSchema.methods.fullName = function () {
     return (this.firstName + " " + this.lastName);
