@@ -44,6 +44,7 @@ const addUser = async (req, res, next) => {
 }
 
 const createAuthToken = (user) => {
+    //TODO: expiresIn must be dynamic
     return jwt.sign({id: user._id}, process.env.JWT_SECRET,{ expiresIn: 360});
 }
 module.exports = {addUser}
