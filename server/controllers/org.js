@@ -50,7 +50,7 @@ const setupOrg = async (req, res) => {
 const findOrgByUrlTxt = async (req, res, next) => {
     if(req.query && req.query.urlTxt) {
         let urlTxt = req.query.urlTxt.trim().toLowerCase();
-        const org = "";
+        let org;
         try {
             org = await Organisation.findOne({urlTxt});
         }

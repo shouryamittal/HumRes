@@ -8,5 +8,5 @@ if(env === "development") {
         process.env[key] = config_env[key];
     });
 
-    process.env.JWT_SECRET = process.env.TOKEN_SECRET;
+    process.env.JWT_SECRET = process.env.TOKEN_SECRET || "secret";
 }

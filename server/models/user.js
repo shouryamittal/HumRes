@@ -20,7 +20,7 @@ const UserSchema = new Schema({
     },
     password: {
         type: String,
-        required: true,
+        required: false,
     },
     role: {
         type: String,
@@ -71,7 +71,7 @@ const UserSchema = new Schema({
 
 UserSchema.pre('save', async function (next) {
     const salt = await bcrypt.genSalt(parseInt(process.env.JWT_SALT_ROUND));
-    const hashedPassword = await bcrypt.hash(this.password, salt);
+    const hashedPassword = await bcrypt.hash(this.password || "", salt);
     try {
         this.password = hashedPassword;
     }
